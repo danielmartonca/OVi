@@ -1,0 +1,16 @@
+{
+  "name": "ovi",
+  "version": "1.0.0",
+  "description": "Obesity Prevelance Visualisor",
+  "scripts": {
+    "start": "parcel src/pages/index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@parcel/transformer-sass": "^2.8.3"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}
