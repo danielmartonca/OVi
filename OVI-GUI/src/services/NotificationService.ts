@@ -14,7 +14,7 @@ export class NotificationService {
             stopOnFocus: true, // Prevents dismissing of toast on hover
             style: {background: Notification.getBackgroundStyling(color)},
         }).showToast();
-        if (Config.debugNotifications) console.log(`Notification: ${message}`);
+        if (Config.debugNotificationsService) console.log(`Notification: ${message}`);
     }
 
     info(message: string) {
