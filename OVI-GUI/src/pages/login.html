@@ -17,17 +17,17 @@
             <h2 id="login-text">Login</h2>
             <form id="login-form">
                 <p>
-                    <label for="username">
-                    </label><input type="text" id="username" name="username" placeholder="Username" required><i
+                    <label for="username"> Username</label>
+                    <input type="text" id="username" name="username" placeholder="Username" required><i
                         class="validation"><span></span><span></span></i>
                 </p>
                 <p>
-                    <label for="email">
-                    </label><input type="email" id="email" name="email" placeholder="Email Address" required><i
+                    <label for="password">Password </label>
+                    <input type="password" id="password" name="password" placeholder="Password" required><i
                         class="validation"><span></span><span></span></i>
                 </p>
                 <p>
-                    <input type="submit" id="login" value="Login">
+                    <input type="submit" id="login-button" value="Login" onclick="submitForm()">
                 </p>
             </form>
             <div id="create-account-wrap">
@@ -38,6 +38,6 @@
     </div>
 </div>
 
+<script type="module" src="../scripts/LoginPage.ts"></script>
 </body>
-
 </html>
