@@ -1,4 +1,4 @@
-import {AbstractPage} from "../../scripts/AbstractPage";
+import {AbstractPage} from "../../configuration/AbstractPage";
 import {NotificationService} from "../../services/NotificationService";
 import {InvalidUsernameError} from "../../exceptions/InvalidUsernameError";
 import {InvalidPasswordError} from "../../exceptions/InvalidPasswordError";
@@ -12,11 +12,11 @@ export class LoginPage extends AbstractPage {
     }
 
     static get usernameInput() {
-        return document.getElementById('username');
+        return document.getElementById('username') as HTMLInputElement;
     }
 
     static get passwordInput() {
-        return document.getElementById('password');
+        return document.getElementById('password') as HTMLInputElement;
     }
 
     static get loginButton() {
@@ -29,21 +29,19 @@ export class LoginPage extends AbstractPage {
     }
 
     static addFormValidationConstraints() {
-        const usernameInput = LoginPage.usernameInput;
-        usernameInput.setAttribute('pattern', Regex.username.source);
-        usernameInput.setAttribute('minlength', "5");
-        usernameInput.setAttribute('maxlength', "15");
+        LoginPage.usernameInput.setAttribute('pattern', Regex.username.source);
+        LoginPage.usernameInput.setAttribute('minlength', "5");
+        LoginPage.usernameInput.setAttribute('maxlength', "15");
 
-        const passwordInput = LoginPage.passwordInput;
-        passwordInput.setAttribute('pattern', Regex.password.source);
-        passwordInput.setAttribute('minlength', "8");
-        passwordInput.setAttribute('maxlength', "15");
+        LoginPage.passwordInput.setAttribute('pattern', Regex.password.source);
+        LoginPage.passwordInput.setAttribute('minlength', "8");
+        LoginPage.passwordInput.setAttribute('maxlength', "15");
     }
 
     static addAutomaticDisablingOfSubmitButtonOnValidation() {
         LoginPage.usernameInput.addEventListener("input",
             () => {
-                if (LoginPage.usernameInput['validity'].valid && LoginPage.passwordInput['validity'].valid) {
+                if (LoginPage.usernameInput.validity.valid && LoginPage.passwordInput.validity.valid) {
                     LoginPage.loginButton.removeAttribute("disabled");
                 } else
                     LoginPage.loginButton.setAttribute("disabled", "disabled");
@@ -52,7 +50,7 @@ export class LoginPage extends AbstractPage {
         );
         LoginPage.passwordInput.addEventListener("input",
             () => {
-                if (LoginPage.usernameInput['validity'].valid && LoginPage.passwordInput['validity'].valid) {
+                if (LoginPage.usernameInput.validity.valid && LoginPage.passwordInput.validity.valid) {
                     LoginPage.loginButton.removeAttribute("disabled");
                 } else
                     LoginPage.loginButton.setAttribute("disabled", "disabled");
@@ -99,10 +97,8 @@ export class LoginPage extends AbstractPage {
 
             this.sendData({username: username, password: password});
 
-            if (Config.debugNotifications) {
-                console.log("Login form has been submitted.");
+            if (Config.debugNotifications)
                 this.notificationService.warn("Login form has been submitted.");
-            }
         } catch (e) {
             if (e instanceof InvalidUsernameError || e instanceof InvalidPasswordError) {
                 return LoginPage.notificationService.warn(e.message);
@@ -110,6 +106,10 @@ export class LoginPage extends AbstractPage {
 
             this.notificationService.error(e);
         }
+    }
+
+    static bindClicks() {
+        LoginPage.loginButton.onclick = () => LoginPage.submitForm();
     }
 }
 
@@ -119,8 +119,8 @@ window.onload = function () {
     LoginPage.preventDefaultFormSubmit();
     LoginPage.addFormValidationConstraints();
     LoginPage.addAutomaticDisablingOfSubmitButtonOnValidation();
+    LoginPage.bindClicks();
 
     if (Config.debugNotifications) console.log("Login page scripts finished.")
 }
 
-document.getElementById('login-button').onclick = () => LoginPage.submitForm();
