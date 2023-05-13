@@ -110,7 +110,7 @@ input {
   height: 60px;
   width: 30px;
   right: 15px;
-  top: 0;
+  top: 25px;
 }
 
 input[type="submit"] {
@@ -131,6 +131,10 @@ input[type="submit"] {
     background-color: #329dd5;
     -webkit-transition: all 0.2s ease;
     transition: all 0.2s ease;
+  }
+
+  &:disabled{
+    background-color: #9f9da7;
   }
 }
 

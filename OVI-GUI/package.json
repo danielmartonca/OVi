@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Obesity Visualizer",
   "scripts": {
-    "start": "parcel serve src/pages/login.html"
+    "start": "parcel serve src/pages/login/login.html"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.8.3",
