@@ -68,8 +68,17 @@ export class RegistrationPage extends AbstractPage {
             () => {
                 if (this.isFormValid) {
                     RegistrationPage.registerButton.removeAttribute("disabled");
-                } else
+                    return;
+                }
+
+                if (RegistrationPage.extractPassword() != RegistrationPage.extractConfirmationPassword()) {
+                    RegistrationPage.confirmPasswordInput.setCustomValidity("Mismatching passwords!");
                     RegistrationPage.registerButton.setAttribute("disabled", "disabled");
+                    return;
+                }
+
+                RegistrationPage.confirmPasswordInput.setCustomValidity("");
+                RegistrationPage.registerButton.removeAttribute("disabled");
             }
         );
 
