@@ -1,10 +1,11 @@
 import * as http from "http";
 import {IncomingMessage, ServerResponse} from "http";
 import {Server} from "net";
-import {RequestProcessor} from './http-processor/RequestProcessor';
 import {ResponseProcessor} from './http-processor/ResponseProcessor';
-import {HeadersProcessor} from "./http-processor/HeadersProcessor";
-import {AccountsController} from "./controllers/AccountsController";
+import {AuthenticationController} from "./controllers/AuthenticationController";
+import {HttpMethod} from "./model/enum/HttpMethod";
+import {RequestProcessor} from "./http-processor/RequestProcessor";
+import {InvalidControllerEndpointError} from "./errors/InvalidControllerEndpointError";
 
 const dotenv = require('dotenv');
 
@@ -12,13 +13,9 @@ const dotenv = require('dotenv');
 class OViServer {
     private readonly host: string;
     private readonly port: number;
-    private server: Server;
+    private readonly server: Server;
 
-    private static requestProcessor: RequestProcessor = new RequestProcessor();
-    private static responseProcessor: ResponseProcessor = new ResponseProcessor();
-    private static headersProcessor: HeadersProcessor = new HeadersProcessor();
-
-    private static accountsController: AccountsController = new AccountsController();
+    private static readonly authenticationController: AuthenticationController = new AuthenticationController();
 
     constructor(host: string, port: number) {
         this.host = host;
@@ -37,35 +34,33 @@ class OViServer {
     }
 
     private static handle(request: IncomingMessage, response: ServerResponse) {
-        OViServer.requestProcessor.log(request);
-        OViServer.requestProcessor.preHandle(request);
-
-        if (OViServer.requestProcessor.isBadRequest(request))
-            return OViServer.responseProcessor.badRequest(response);
+        RequestProcessor.log(request);
+        RequestProcessor.preHandle(request);
 
         let bodyStr = '';
         request.on('data', chunk => bodyStr += chunk);
-        request.on('error', err => OViServer.responseProcessor.internalServerError(response, err));
-        request.on('end', () => {
-            try {
-                const body = bodyStr.length != 0 ? JSON.parse(bodyStr) : null;
-
-                if (request.url?.startsWith('/api/accounts'))
-                    return this.handleAccountControllerEndpoint(request.url!, body, response);
-
-                return OViServer.responseProcessor.badRequest(response);
-            } catch (error) {
-                return OViServer.responseProcessor.internalServerError(response, error);
-            } finally {
-                response.end();
-            }
-        });
+        request.on('error', err => ResponseProcessor.internalServerError(response, err));
+        request.on('end', () => OViServer.work(request, response, bodyStr));
     }
 
-    private static handleAccountControllerEndpoint(url: string, body: any, response: ServerResponse) {
-        if (url.startsWith('/api/accounts/get'))
-            return OViServer.accountsController.get(response);
-        throw new Error(`Invalid Accounts Controller Endpoint ${url}`);
+    private static work(request: IncomingMessage, response: ServerResponse, bodyStr: string) {
+        try {
+            const method = HttpMethod.stringToType(request.method!);
+
+            const body = bodyStr.length != 0 ? JSON.parse(bodyStr) : null;
+
+            if (request.url?.startsWith('/api/auth'))
+                return OViServer.authenticationController.mapEndpoints(method, request.url!, body, response);
+
+            ResponseProcessor.badRequest(response, new InvalidControllerEndpointError(`${request.url!} does not match any controller`));
+        } catch (error) {
+            if (error instanceof InvalidControllerEndpointError)
+                return ResponseProcessor.badRequest(response, error);
+
+            return ResponseProcessor.internalServerError(response, error);
+        } finally {
+            response.end();
+        }
     }
 }
 

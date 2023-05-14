@@ -1,13 +1,17 @@
 import {ServerResponse} from "http";
+import {StatusCodes} from "http-status-codes";
 
-export class ResponseProcessor {
+export namespace ResponseProcessor {
 
-    internalServerError(response: ServerResponse, reason: any | null = null) {
-
+    export function internalServerError(response: ServerResponse, reason: any) {
+        response.writeHead(StatusCodes.INTERNAL_SERVER_ERROR);
+        response.write(`Internal Server Error: ${JSON.stringify(reason)}`);
+        console.error(JSON.stringify(reason));
     }
 
-    badRequest(response: ServerResponse) {
-        response.writeHead(404);
+    export function badRequest(response: ServerResponse, error: Error | null = null) {
+        response.writeHead(StatusCodes.BAD_REQUEST);
         response.write('Bad Request');
+        console.warn(`Bad Request ${error != null ? JSON.stringify(error) : ''}`);
     }
 }
