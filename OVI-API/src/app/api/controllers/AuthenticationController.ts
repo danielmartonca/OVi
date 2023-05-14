@@ -1,29 +1,34 @@
 import {ServerResponse} from "http";
-import {ResponseUtils} from "../utils/ResponseUtils";
 import {StatusCodes} from "http-status-codes";
 import {AuthenticationService} from "../services/AuthenticationService";
 import {Register} from "../services/enum/RegisterResponse";
 import {HttpMethod} from "../model/enum/HttpMethod";
 import {AbstractController} from "./AbstractController";
 import {InvalidControllerEndpointError} from "../errors/InvalidControllerEndpointError";
+import {ResponseProcessor} from "../http-processor/ResponseProcessor";
+import {RegistrationDataDTO} from "../model/client/RegistrationDataDTO";
 
 export class AuthenticationController extends AbstractController {
     private authenticationService: AuthenticationService = new AuthenticationService();
 
-    mapEndpoints(method: HttpMethod.Type, url: string, body: any, response: ServerResponse): void {
-        if (url == '/api/auth/register')
-            return this.register(body, response);
-
-        throw new InvalidControllerEndpointError(url);
+    mapEndpoints(method: HttpMethod.Type, url: string, body: string | null, response: ServerResponse): void {
+        switch (method) {
+            case HttpMethod.Type.POST:
+                switch (url) {
+                    case '/api/auth/register':
+                        return this.register(new RegistrationDataDTO(body!), response);
+                }
+        }
+        throw new InvalidControllerEndpointError(method, url);
     }
 
-    register(body: any, response: ServerResponse) {
-        const registrationResponse = this.authenticationService.register(body);
+    register(dto: RegistrationDataDTO, response: ServerResponse) {
+        const registrationResponse = this.authenticationService.register(dto);
         const responseMessage = Register.mapResponseToMessage(registrationResponse);
 
         if (registrationResponse == Register.Response.SUCCESS)
-            return ResponseUtils.writeResponse(response, StatusCodes.CREATED, responseMessage);
+            return ResponseProcessor.end(response, StatusCodes.CREATED, responseMessage);
 
-        return ResponseUtils.writeResponse(response, StatusCodes.OK, responseMessage);
+        return ResponseProcessor.end(response, StatusCodes.OK, responseMessage);
     }
 }
