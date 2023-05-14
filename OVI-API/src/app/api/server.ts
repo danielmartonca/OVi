@@ -6,6 +6,7 @@ import {AuthenticationController} from "./controllers/AuthenticationController";
 import {HttpMethod} from "./model/enum/HttpMethod";
 import {RequestProcessor} from "./http-processor/RequestProcessor";
 import {InvalidControllerEndpointError} from "./errors/InvalidControllerEndpointError";
+import {MissingBodyException} from "./errors/MissingBodyException";
 
 const dotenv = require('dotenv');
 
@@ -43,19 +44,19 @@ class OViServer {
         request.on('end', () => OViServer.work(request, response, bodyStr));
     }
 
-    private static work(request: IncomingMessage, response: ServerResponse, bodyStr: string) {
+    private static work(request: IncomingMessage, response: ServerResponse, body: string | null) {
         try {
             const method = HttpMethod.stringToType(request.method!);
-
-            const body = bodyStr.length != 0 ? JSON.parse(bodyStr) : null;
+            if (body == '') body = null;
 
             if (request.url?.startsWith('/api/auth'))
                 return OViServer.authenticationController.mapEndpoints(method, request.url!, body, response);
 
-            ResponseProcessor.badRequest(response, new InvalidControllerEndpointError(`${request.url!} does not match any controller`));
+            ResponseProcessor.badRequest(response, new InvalidControllerEndpointError(method, `${request.url!} does not match any controller`));
         } catch (error) {
-            if (error instanceof InvalidControllerEndpointError)
-                return ResponseProcessor.badRequest(response, error);
+            if (error instanceof InvalidControllerEndpointError ||
+                error instanceof MissingBodyException
+            ) return ResponseProcessor.badRequest(response, error);
 
             return ResponseProcessor.internalServerError(response, error);
         } finally {

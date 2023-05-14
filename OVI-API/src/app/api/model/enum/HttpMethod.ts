@@ -17,4 +17,19 @@ export namespace HttpMethod {
                 throw new Error(`Unsupported HTTP Method ${method}`);
         }
     }
+
+    export function typeToString(method: Type): string {
+        switch (method) {
+            case HttpMethod.Type.GET:
+                return "GET";
+            case HttpMethod.Type.POST:
+                return "POST";
+            case HttpMethod.Type.PUT:
+                return "PUT";
+            case HttpMethod.Type.DELETE:
+                return "DELETE";
+            default:
+                throw new Error(`Unsupported HTTP Method ${method}`);
+        }
+    }
 }
