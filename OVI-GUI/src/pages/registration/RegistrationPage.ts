@@ -28,6 +28,10 @@ export class RegistrationPage extends AbstractPage {
         return document.getElementById('register-button');
     }
 
+    static get invalidationText() {
+        return document.getElementById('register-form-validation-text');
+    }
+
     static preventDefaultFormSubmit() {
         RegistrationPage.form
             .addEventListener("click", (event: MouseEvent) => event.preventDefault());
@@ -41,60 +45,88 @@ export class RegistrationPage extends AbstractPage {
         RegistrationPage.passwordInput.setAttribute('pattern', Regex.password.source);
         RegistrationPage.passwordInput.setAttribute('minlength', "8");
         RegistrationPage.passwordInput.setAttribute('maxlength', "15");
-
-        RegistrationPage.confirmPasswordInput.setAttribute('pattern', Regex.password.source);
-        RegistrationPage.confirmPasswordInput.setAttribute('minlength', "8");
-        RegistrationPage.confirmPasswordInput.setAttribute('maxlength', "15");
     }
 
     static get isFormValid(): boolean {
+        if (RegistrationPage.extractPassword() == RegistrationPage.extractConfirmationPassword()) RegistrationPage.confirmPasswordInput.setCustomValidity("");
+
         return RegistrationPage.usernameInput.validity.valid
             && RegistrationPage.passwordInput.validity.valid
-            && RegistrationPage.confirmPasswordInput.validity.valid;
+            && RegistrationPage.confirmPasswordInput.validity.valid
+            && RegistrationPage.extractPassword() == RegistrationPage.extractConfirmationPassword();
+    }
+
+    static validateForm() {
+        RegistrationPage.confirmPasswordInput.setCustomValidity("");
+
+        RegistrationPage.invalidationText.innerText = "";
+        RegistrationPage.invalidationText.setAttribute('display', 'none');
+
+        RegistrationPage.registerButton.removeAttribute("disabled");
+    }
+
+    static invalidateForm() {
+        RegistrationPage.registerButton.setAttribute("disabled", "disabled");
+
+        if (!RegistrationPage.usernameInput.validity.valid) {
+            if (RegistrationPage.usernameInput.value.length != 0)
+                RegistrationPage.invalidationText.innerText = RegistrationPage.usernameInput.validationMessage;
+            else
+                RegistrationPage.invalidationText.innerText = "";
+
+            return RegistrationPage.invalidationText.setAttribute('display', 'block');
+        }
+
+        if (!RegistrationPage.passwordInput.validity.valid) {
+            if (RegistrationPage.passwordInput.value.length != 0)
+                RegistrationPage.invalidationText.innerText = RegistrationPage.passwordInput.validationMessage;
+            else
+                RegistrationPage.invalidationText.innerText = "";
+
+            return RegistrationPage.invalidationText.setAttribute('display', 'block');
+        }
+
+        if (!RegistrationPage.confirmPasswordInput.validity.valid) {
+            if (RegistrationPage.confirmPasswordInput.value.length != 0)
+                RegistrationPage.invalidationText.innerText = RegistrationPage.confirmPasswordInput.validationMessage;
+            else
+                RegistrationPage.invalidationText.innerText = "";
+
+            return RegistrationPage.invalidationText.setAttribute('display', 'block');
+        }
+
+        if (RegistrationPage.extractPassword() != RegistrationPage.extractConfirmationPassword()) {
+            RegistrationPage.confirmPasswordInput.setCustomValidity("Passwords do not match!");
+            RegistrationPage.invalidationText.innerText = RegistrationPage.confirmPasswordInput.validationMessage;
+            return RegistrationPage.invalidationText.setAttribute('display', 'block');
+        }
     }
 
     static addAutomaticDisablingOfSubmitButtonOnValidation() {
         RegistrationPage.usernameInput.addEventListener("input",
             () => {
-                if (this.isFormValid) {
-                    RegistrationPage.registerButton.removeAttribute("disabled");
-                } else
-                    RegistrationPage.registerButton.setAttribute("disabled", "disabled");
+                if (RegistrationPage.isFormValid)
+                    return RegistrationPage.validateForm();
 
+                RegistrationPage.invalidateForm();
             }
         );
 
         RegistrationPage.passwordInput.addEventListener("input",
             () => {
-                if (this.isFormValid) {
-                    RegistrationPage.registerButton.removeAttribute("disabled");
-                    return;
-                }
+                if (RegistrationPage.isFormValid)
+                    return RegistrationPage.validateForm();
 
-                if (RegistrationPage.extractPassword() != RegistrationPage.extractConfirmationPassword()) {
-                    RegistrationPage.confirmPasswordInput.setCustomValidity("Mismatching passwords!");
-                    RegistrationPage.registerButton.setAttribute("disabled", "disabled");
-                    return;
-                }
-
-                RegistrationPage.confirmPasswordInput.setCustomValidity("");
-                RegistrationPage.registerButton.removeAttribute("disabled");
+                RegistrationPage.invalidateForm();
             }
         );
 
         RegistrationPage.confirmPasswordInput.addEventListener("input",
             () => {
-                if (RegistrationPage.extractPassword() != RegistrationPage.extractConfirmationPassword()) {
-                    RegistrationPage.confirmPasswordInput.setCustomValidity("Mismatching passwords!");
-                    RegistrationPage.registerButton.setAttribute("disabled", "disabled");
-                    return;
-                }
-                RegistrationPage.confirmPasswordInput.setCustomValidity("");
+                if (RegistrationPage.isFormValid)
+                    return RegistrationPage.validateForm();
 
-                if (this.isFormValid) {
-                    RegistrationPage.registerButton.removeAttribute("disabled");
-                } else
-                    RegistrationPage.registerButton.setAttribute("disabled", "disabled");
+                RegistrationPage.invalidateForm();
             }
         );
     }
