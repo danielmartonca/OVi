@@ -1,3 +1,3 @@
-export class HeadersProcessor {
+export namespace HeadersProcessor {
 
 }

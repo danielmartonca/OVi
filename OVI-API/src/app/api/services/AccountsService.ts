@@ -1,4 +1,5 @@
-import {Account, AccountType} from "../model/Account";
+import {Account} from "../model/data/Account";
+import {AccountType} from "../model/enum/AccountType";
 
 export class AccountsService {
     public getAccounts(): Account[] {

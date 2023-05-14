@@ -1,3 +1,6 @@
+import {AccountType} from "../enum/AccountType";
+import {AccountDTO} from "../dto/AccountDTO";
+
 export class Account {
 
     constructor(id: number, username: string, password: string, type: AccountType) {
@@ -12,9 +15,7 @@ export class Account {
     public password: string;
     public type: AccountType;
 
-}
-
-export enum AccountType {
-    user,
-    admin
+    public dto(): AccountDTO {
+        return new AccountDTO(this.username, this.password, this.type);
+    }
 }

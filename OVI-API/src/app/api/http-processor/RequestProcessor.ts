@@ -1,15 +1,12 @@
 import {IncomingMessage} from "http";
 
-export class RequestProcessor {
+export namespace RequestProcessor {
 
-    log(request:IncomingMessage){
+    export function log(request: IncomingMessage) {
         console.log(`[${request.method}] ${request.url} called.`)
     }
-    preHandle(request: IncomingMessage) {
-        request.setEncoding("utf8");
-    }
 
-    isBadRequest(request: IncomingMessage): boolean {
-        return false;
+    export function preHandle(request: IncomingMessage) {
+        request.setEncoding("utf8");
     }
 }
