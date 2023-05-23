@@ -11,19 +11,19 @@ import {RegistrationDataDTO} from "../model/client/RegistrationDataDTO";
 export class AuthenticationController extends AbstractController {
     private authenticationService: AuthenticationService = new AuthenticationService();
 
-    mapEndpoints(method: HttpMethod.Type, url: string, body: string | null, response: ServerResponse): void {
+    async mapEndpoints(method: HttpMethod.Type, url: string, body: string | null, response: ServerResponse) {
         switch (method) {
             case HttpMethod.Type.POST:
                 switch (url) {
                     case '/api/auth/register':
-                        return this.register(new RegistrationDataDTO(body!), response);
+                        return await this.register(new RegistrationDataDTO(body!), response);
                 }
         }
         throw new InvalidControllerEndpointError(method, url);
     }
 
-    register(dto: RegistrationDataDTO, response: ServerResponse) {
-        const registrationResponse = this.authenticationService.register(dto);
+    async register(dto: RegistrationDataDTO, response: ServerResponse) {
+        const registrationResponse = await this.authenticationService.register(dto);
         const responseMessage = Register.mapResponseToMessage(registrationResponse);
 
         if (registrationResponse == Register.Response.SUCCESS)
