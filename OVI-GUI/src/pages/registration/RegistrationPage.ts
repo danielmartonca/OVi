@@ -1,11 +1,11 @@
-import {AbstractPage} from "../../configuration/AbstractPage";
+import {AbstractComponent} from "../../configuration/AbstractComponent";
 import {NotificationService} from "../../services/NotificationService";
 import {InvalidUsernameError} from "../../exceptions/InvalidUsernameError";
 import {InvalidPasswordError} from "../../exceptions/InvalidPasswordError";
 import {Config, Regex} from "../../configuration/Config";
 import {MismatchingPasswordsError} from "../../exceptions/MismatchingPasswordsError";
 
-export class RegistrationPage extends AbstractPage {
+export class RegistrationPage extends AbstractComponent {
     static readonly notificationService: NotificationService = RegistrationPage.services.notificationsService;
 
     static get form() {
@@ -197,7 +197,7 @@ export class RegistrationPage extends AbstractPage {
     }
 }
 
-window.onload = function () {
+window.addEventListener('load', () => {
     if (Config.debugNotifications) console.log("Register page loaded. Running scripts...")
 
     RegistrationPage.preventDefaultFormSubmit();
@@ -206,4 +206,4 @@ window.onload = function () {
     RegistrationPage.bindClicks();
 
     if (Config.debugNotifications) console.log("Register page scripts finished.")
-}
+})
