@@ -5,6 +5,8 @@
   "main": "/dist/server.js",
   "scripts": {
     "start": "ts-node-dev --respawn ./src/app/api/server.ts",
+    "start-db-container": "cd docker && docker compose --env-file ../.env up",
+    "stop-db-container": "cd docker && docker compose --env-file ../.env down",
     "dev": "nodemon --exec ts-node ./src/app/api/server.ts"
   },
   "dependencies": {

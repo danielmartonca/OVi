@@ -1,7 +1,12 @@
 @import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
 @import "../../node_modules/toastify-js/src/toastify.css";
 @import "../pages/components/sidemenu/SideMenu.scss";
 
 * {
   box-sizing: border-box;
+}
+
+.content {
+  padding-left: 60px;
 }

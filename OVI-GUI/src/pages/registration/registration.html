@@ -10,53 +10,56 @@
 </head>
 
 <body>
-<div class="body-background">
-    <div id="register-form-background">
-        <div id="register-form-wrap">
-            <h2 id="register-text">Register</h2>
-            <form id="register-form">
-                <p>
-                    <label for="username"> Username</label>
-                    <input id="username"
-                           type="text"
-                           name="username"
-                           placeholder="Username"
-                           required
-                    > <i class="validation"><span></span><span></span></i>
-                </p>
-                <p>
-                    <label for="password">Password </label>
-                    <input id="password"
-                           type="password"
-                           name="password"
-                           placeholder="Password"
-                           required
-                           minlength="5"
-                    > <i class="validation"><span></span><span></span></i>
-                </p>
-                <p>
-                    <label for="password-confirmation"> </label>
-                    <input id="password-confirmation"
-                           type="password"
-                           name="password-confirmation"
-                           placeholder="Confirm Password"
-                           required
-                           minlength="5"
-                    > <i class="validation" style="top: 0"><span></span><span></span></i>
-                </p>
-                <p id="register-form-validation-text"></p>
-                <p>
-                    <input id="register-button"
-                           type="submit"
-                           value="Register"
-                           onclick="submitForm()"
-                           disabled
-                    >
-                </p>
-            </form>
-            <div id="create-account-wrap">
-                <p>Already a member? <a href="../login/login.html">Login</a>
-                <p>
+
+<div class="content">
+    <div class="body-background">
+        <div id="register-form-background">
+            <div id="register-form-wrap">
+                <h2 id="register-text">Register</h2>
+                <form id="register-form">
+                    <p>
+                        <label for="username"> Username</label>
+                        <input id="username"
+                               type="text"
+                               name="username"
+                               placeholder="Username"
+                               required
+                        > <i class="validation"><span></span><span></span></i>
+                    </p>
+                    <p>
+                        <label for="password">Password </label>
+                        <input id="password"
+                               type="password"
+                               name="password"
+                               placeholder="Password"
+                               required
+                               minlength="5"
+                        > <i class="validation"><span></span><span></span></i>
+                    </p>
+                    <p>
+                        <label for="password-confirmation"> </label>
+                        <input id="password-confirmation"
+                               type="password"
+                               name="password-confirmation"
+                               placeholder="Confirm Password"
+                               required
+                               minlength="5"
+                        > <i class="validation" style="top: 0"><span></span><span></span></i>
+                    </p>
+                    <p id="register-form-validation-text"></p>
+                    <p>
+                        <input id="register-button"
+                               type="submit"
+                               value="Register"
+                               onclick="submitForm()"
+                               disabled
+                        >
+                    </p>
+                </form>
+                <div id="create-account-wrap">
+                    <p>Already a member? <a href="../login/login.html">Login</a>
+                    <p>
+                </div>
             </div>
         </div>
     </div>

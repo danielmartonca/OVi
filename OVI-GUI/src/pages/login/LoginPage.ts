@@ -1,10 +1,10 @@
-import {AbstractPage} from "../../configuration/AbstractPage";
+import {AbstractComponent} from "../../configuration/AbstractComponent";
 import {NotificationService} from "../../services/NotificationService";
 import {InvalidUsernameError} from "../../exceptions/InvalidUsernameError";
 import {InvalidPasswordError} from "../../exceptions/InvalidPasswordError";
 import {Config, Regex} from "../../configuration/Config";
 
-export class LoginPage extends AbstractPage {
+export class LoginPage extends AbstractComponent {
     static readonly notificationService: NotificationService = LoginPage.services.notificationsService;
 
     static get form() {
@@ -113,7 +113,7 @@ export class LoginPage extends AbstractPage {
     }
 }
 
-window.onload = function () {
+window.addEventListener('load', () => {
     if (Config.debugNotifications) console.log("Login page loaded. Running scripts...")
 
     LoginPage.preventDefaultFormSubmit();
@@ -122,5 +122,4 @@ window.onload = function () {
     LoginPage.bindClicks();
 
     if (Config.debugNotifications) console.log("Login page scripts finished.")
-}
-
+})
